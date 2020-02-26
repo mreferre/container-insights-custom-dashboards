@@ -45,7 +45,7 @@ Note that while you could select multiple log groups at the same time, most of t
 
 For the records, the dashboard can be exported at any time using the following command:
 ```
-aws2 cloudwatch get-dashboard --dashboard-name fargate-right-sizing --output text
+aws cloudwatch get-dashboard --dashboard-name fargate-right-sizing --output text
 ``` 
 
 ## Known issues and limitations 
