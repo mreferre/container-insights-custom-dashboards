@@ -77,6 +77,19 @@
           "title": "Memory Reserved Vs Avg Usage (All Fargate Tasks)",
           "view": "timeSeries"
         }
+      },
+      {
+        "type": "log",
+        "x": 0,
+        "y": 24,
+        "width": 24,
+        "height": 9,
+        "properties": {
+          "query": "SOURCE '/aws/ecs/containerinsights/CLUSTERNAME/performance' | fields @message\n| filter Type=\"Task\"\n| filter ispresent(ServiceName)\n| filter @logStream like /FargateTelemetry/\n| stats latest(TaskDefinitionFamily) as TaskDefFamily, latest(TaskDefinitionRevision) as Rev, latest(ClusterName) as Cluster, max(CpuReserved) as TaskCpuReserved, avg(CpuUtilized) as AvgCpuUtilized, avg(CpuUtilized) * 100 / TaskCpuReserved as AvgCpuUtilizedPerc, max(CpuUtilized) as PeakCpuUtilized, max(CpuUtilized) * 100 / TaskCpuReserved as PeakCpuUtilizedPerc, \nmax(MemoryReserved) as TaskMemReserved, avg(MemoryUtilized) as AvgMemUtilized, avg(MemoryUtilized) * 100 / TaskMemReserved as AvgMemUtilizedPerc, max(MemoryUtilized) as PeakMemUtilized, max(MemoryUtilized) * 100 / TaskMemReserved as PeakMemUtilizedPerc by ServiceName as Service\n| sort ServiceName asc\n",
+          "stacked": false,
+          "title": "All Fargate Services Configuration and Consumption Details (CPU and Memory)",
+          "view": "table"
+        }
       }
     ]
   }

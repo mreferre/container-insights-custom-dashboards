@@ -15,14 +15,16 @@ How can we go one level down deep from the task definition family into each sing
 The Fargate right sizing dashboard uses CloudWatch Logs Insights to scan and analyze performance logs collected from the cluster you want to optimize. 
 
 The dashboard tries to respond to these user stories (as a user I would like to):
-- see the total number of running Fargate tasks in the cluster
-- see the total waste (aggregate of all running Fargate tasks) relative to actual consumption based on memory usage 
-- see the total waste (aggregate of all running Fargate tasks) relative to actual consumption based on CPU usage 
-- see the top 10 running Fargate tasks order by memory waste (i.e. the 10 tasks with the highest memory optimization opportunity)  
-- see the top 10 running Fargate tasks ordered by CPU waste (i.e. the 10 tasks with the highest CPU optimization opportunity)  
-- see the list of all running Fargate tasks ordered by tasks with the most waste based on cpu usage and memory usage 
-- see the list of all running tasks with all the configuration and consumption details ordered by the task definition family name  
+- see the total number of Fargate tasks that have been running in the cluster in the period selected
+- see the total waste (aggregate of all Fargate tasks in the period selected) relative to actual consumption based on memory usage 
+- see the total waste (aggregate of all Fargate tasks in the period selected) relative to actual consumption based on CPU usage 
+- see the top 10 Fargate tasks order by memory waste (i.e. the 10 tasks with the highest memory optimization opportunity)  
+- see the top 10 Fargate tasks ordered by CPU waste (i.e. the 10 tasks with the highest CPU optimization opportunity)  
+- see the list of all Fargate tasks ordered by tasks with the most waste based on cpu usage and memory usage 
+- see the list of all Fargate tasks with all the configuration and consumption details ordered by the task definition family name  
+- see the list of all ECS services running Fargate tasks with all the configuration and consumption details ordered by the service name 
 
+The last view ("all ECS services") is a special view that aggregates all tasks that belong to that service. This table will give you an average consumption among all tasks that have ever been running in that service over the period selected. The peaks are not averaged and are instead the max cpu / memory consumption that occurred in a specific task (over the period of time). Note that this view starts to get somewhat redundant with the out of the box "ECS service" graph view Container Insights provide even though this provides more details. 
 
 ## How do I import the dashboard? 
 
@@ -50,8 +52,9 @@ aws cloudwatch get-dashboard --dashboard-name fargate-right-sizing --output text
 
 ## Known issues and limitations 
 
-- This dashboard only tracks ECS/Fargate tasks. Because EKS/Fargate isn't yet supported by Container Insights, it cannot track EKS/Fargate pods. 
-- This only tracks and consider ECS/Fargate tasks. It doesn't consider ECS/EC2 tasks (because the optimization considerations for tasks running on EC2 may possibly be very different due to sharing of resources and over-commitment capabilities). 
+- This dashboard only tracks ECS/Fargate tasks. Because EKS/Fargate isn't yet supported by Container Insights, it cannot track EKS/Fargate pods
+- This only tracks and consider ECS/Fargate tasks. It doesn't consider ECS/EC2 tasks (because the optimization considerations for tasks running on EC2 may possibly be very different due to sharing of resources and over-commitment capabilities)
+- All tasks are considered for the period you specified. That is, this includes also tasks that are no longer running. Because of this, the "per service" view does not represent exclusively the tasks that are running in a specific point in time but rather all tasks that has been running over time in that service. That is to say that this view represents how well (or bad) a given service has been performing but not necessarily its current performance. 
 - These dashboards are not intended to hint a proper Fargate task size. You should only use them to track tasks with the highest CPU and memory optimization opportunity and do a further analysis from there 
-- The retention of the Container Insights performance logs is 1 day. This means that the graphs can only track the previous 24 hours and that the averages are calculated across the same amount of time 
-- These are logs and not metrics. Hence you cannot set alarms like you'd normally do with metrics. 
+- The default retention of the Container Insights performance logs is 1 day. This means that by default the graphs can only track the previous 24 hours. If you want these data to persist you can change manually the retention period of the cluster CloudWatch log group
+- These are logs and not metrics. Hence you cannot set alarms like you'd normally do with metrics
