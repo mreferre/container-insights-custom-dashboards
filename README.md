@@ -21,3 +21,5 @@ The *CW Agent* collects performance events (Type=Container|ContainerFS|Node|Node
 At the time of this writing there is only 1 custom dashboard in this project. This is at an experimental phase right now. Please feel free to leave feedbacks about what you would like to see. 
 
 - [ECS/Fargate Right Sizing](https://github.com/mreferre/container-insights-custom-dashboards/tree/master/fargate-right-sizing) This experimental dashboard helps you track your ECS/Fargate tasks and search for optimization opportunities. Click [here](https://github.com/mreferre/container-insights-custom-dashboards/tree/master/fargate-right-sizing) to learn more.
+
+![](./images/fargate-right-sizing.png)
