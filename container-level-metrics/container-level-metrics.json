@@ -1,0 +1,75 @@
+{
+    "start": "-PT168H",
+    "widgets": [
+        {
+            "height": 6,
+            "width": 15,
+            "y": 0,
+            "x": 0,
+            "type": "log",
+            "properties": {
+                "query": "SOURCE '/aws/ecs/containerinsights/CLUSTERNAME/performance' | fields @message\n| filter Type=\"Container\"\n| filter @logStream like /FargateTelemetry/\n| stats  max(CpuUtilized) as PeakCpuUtilized, avg(CpuUtilized) as AvgCpuUtilized, avg(CpuUtilized/10.24) as PercentCpu by ContainerName\n| sort ContainerName asc",
+                "region": "us-east-1",
+                "stacked": false,
+                "title": "CPU usage by Container",
+                "view": "table"
+            }
+        },
+        {
+            "height": 6,
+            "width": 15,
+            "y": 6,
+            "x": 0,
+            "type": "log",
+            "properties": {
+                "query": "SOURCE '/aws/ecs/containerinsights/CLUSTERNAME/performance' | fields @message\n| filter Type=\"Container\"\n| filter @logStream like /FargateTelemetry/\n| stats max(MemoryUtilized) as PeakMemUtilized, ceil(avg(MemoryUtilized)) as AvgMemUtilized, avg(MemoryUtilized/20.48) as PercentMemUtilized by ContainerName\n| sort ContainerName asc",
+                "region": "us-east-1",
+                "stacked": false,
+                "title": "Top 10 Fargate Tasks with Optimization Opportunities (Memory)",
+                "view": "table"
+            }
+        },
+        {
+            "height": 6,
+            "width": 9,
+            "y": 0,
+            "x": 15,
+            "type": "log",
+            "properties": {
+                "query": "SOURCE '/aws/ecs/containerinsights/CLUSTERNAME/performance' | fields @message\n| filter Type=\"Container\" and ContainerName=\"CONTAINERNAME\"\n| filter @logStream like /FargateTelemetry/\n| stats  avg(CpuUtilized) as AvgCpuUtilized, max(CpuUtilized) as PeakCpuUtilized, avg(CpuUtilized/1024) as PercentCpu by bin(30m)\n",
+                "region": "us-east-1",
+                "stacked": false,
+                "title": "CPU usage for CONTAINERNAME",
+                "view": "timeSeries"
+            }
+        },
+        {
+            "height": 6,
+            "width": 9,
+            "y": 6,
+            "x": 15,
+            "type": "log",
+            "properties": {
+                "query": "SOURCE '/aws/ecs/containerinsights/CLUSTERNAME/performance' | fields @message\n| filter Type=\"Container\" and ContainerName=\"CONTAINERNAME\"\n| filter @logStream like /FargateTelemetry/\n| stats max(MemoryUtilized) as PeakMemUtilized, ceil(avg(MemoryUtilized)) as AvgMemUtilized, avg(MemoryUtilized/20.48) as PercentMemUtilized by bin(30m)\n",
+                "region": "us-east-1",
+                "stacked": false,
+                "title": "Memory usage for CONTAINERNAME",
+                "view": "timeSeries"
+            }
+        },
+        {
+            "height": 9,
+            "width": 24,
+            "y": 12,
+            "x": 0,
+            "type": "log",
+            "properties": {
+                "query": "SOURCE '/aws/ecs/containerinsights/CLUSTERNAME/performance' | SOURCE '/aws/ecs/containerinsights/confidence-production/performance' | SOURCE '/aws/ecs/containerinsights/confidence-qa/performance' | SOURCE '/aws/ecs/containerinsights/confidence-uat/performance' | fields @message\n| filter Type=\"Container\"\n| filter @logStream like /FargateTelemetry/\n| stats  latest(ClusterName) as Cluster, max(CpuReserved) as MaxCpuReserved, avg(CpuUtilized) as AvgCpuUtilized, max(CpuUtilized) as PeakCpuUtilized, ceil(avg(MemoryUtilized)) as AvgMemUtilized, max(MemoryUtilized) as PeakMemUtilized by ContainerName, ClusterName\n| sort ContainerName asc",
+                "region": "us-east-1",
+                "stacked": false,
+                "title": "Fargate Container Consumption Details  for all clusters (CPU and Memory)",
+                "view": "table"
+            }
+        }
+    ]
+}
