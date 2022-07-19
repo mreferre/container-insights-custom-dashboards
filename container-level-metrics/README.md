@@ -4,7 +4,7 @@ Container Insights gives users container-level metrics HOWEVER to see said metri
 
 ## How does the AWS Container Level Metrics dashboard look like?
 
-![fargate-right-sizing](../images/container-level-metrics.png)  
+![container-level-metrics](../images/container-level-metrics.png)  
 
 ## How do I import the dashboard?
 
