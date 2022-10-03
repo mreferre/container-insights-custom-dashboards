@@ -48,12 +48,13 @@ sed -i 's/CONTAINERNAMEREPLACEME/<my container name>/g' container-level-metrics.
 sed -i 's/TASKIDREPLACEME/<my task id>/g' container-level-metrics.json
 
 # BSD sed (mac)
-sed -i.bak 's/CONTAINERNAME/mycontainer/g' container-level-metrics.json
+sed -i.bak 's/CONTAINERNAMEREPLACEME/<my container name>/g' container-level-metrics.json
+sed -i.bak 's/TASKIDREPLACEME/<my task id>/g' container-level-metrics.json
 ```
 
 Now you are ready to import the dashboard with the following command:
 ```
-aws cloudwatch put-dashboard --dashboard-name fargate-right-sizing --dashboard-body file://./container-level-metrics.json
+aws cloudwatch put-dashboard --dashboard-name container-level-metrics --dashboard-body file://./container-level-metrics.json
 ```
 
 If you want/need to examine other containers and tasks, you can edit the dashboard and modify the task id and container name. 
