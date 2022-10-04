@@ -52,9 +52,8 @@ aws cloudwatch get-dashboard --dashboard-name fargate-right-sizing --output text
 
 ## Known issues and limitations 
 
-- This dashboard only tracks ECS/Fargate tasks. Because EKS/Fargate isn't yet supported by Container Insights, it cannot track EKS/Fargate pods
-- This only tracks and consider ECS/Fargate tasks. It doesn't consider ECS/EC2 tasks (because the optimization considerations for tasks running on EC2 may possibly be very different due to sharing of resources and over-commitment capabilities)
-- All tasks are considered for the period you specified. That is, this includes also tasks that are no longer running. Because of this, the "per service" view does not represent exclusively the tasks that are running in a specific point in time but rather all tasks that has been running over time in that service. That is to say that this view represents how well (or bad) a given service has been performing but not necessarily its current performance. 
+- This dashboard only tracks and consider ECS/Fargate tasks. It doesn't consider ECS/EC2 tasks (because the optimization considerations for tasks running on EC2 may, possibly, be very different due to sharing of resources and over-commitment capabilities)
+- All tasks are considered for the period you specified. That is, this includes also tasks that are no longer running. Because of this, the "per service" view does not represent exclusively the tasks that are running in a specific point in time but rather all tasks that has been running over time in that service. That is to say that this view represents how well (or bad) a given service has been performing but not necessarily its current performance
 - These dashboards are not intended to hint a proper Fargate task size. You should only use them to track tasks with the highest CPU and memory optimization opportunity and do a further analysis from there 
 - The default retention of the Container Insights performance logs is 1 day. This means that by default the graphs can only track the previous 24 hours. If you want these data to persist you can change manually the retention period of the cluster CloudWatch log group
-- These are logs and not metrics. Hence you cannot set alarms like you'd normally do with metrics
+- These are logs and not metrics. Hence, you cannot set alarms like you'd normally do with metrics

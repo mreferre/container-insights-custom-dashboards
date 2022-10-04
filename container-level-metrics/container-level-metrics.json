@@ -1,0 +1,75 @@
+{
+    "start": "-PT168H",
+    "widgets": [
+        {
+            "height": 6,
+            "width": 15,
+            "y": 0,
+            "x": 0,
+            "type": "log",
+            "properties": {
+                "query": "SOURCE '/aws/ecs/containerinsights/CLUSTERNAME/performance' | fields @message\n| filter Type=\"Container\" and TaskId=\"TASKIDREPLACEME\"\n| filter @logStream like \"FargateTelemetry\"\n| stats  max(CpuReserved) as ContainerCpuReserved, max(CpuUtilized) as PeakCpuUtilized, avg(CpuUtilized) as AvgCpuUtilized by ContainerName | sort ContainerName asc",
+                "region": "us-west-2",
+                "stacked": false,
+                "title": "CPU usage by Container",
+                "view": "table"
+            }
+        },
+        {
+            "height": 6,
+            "width": 15,
+            "y": 6,
+            "x": 0,
+            "type": "log",
+            "properties": {
+                "query": "SOURCE '/aws/ecs/containerinsights/CLUSTERNAME/performance' | fields @message\n| filter Type=\"Container\" and TaskId=\"TASKIDREPLACEME\"\n| filter @logStream like \"FargateTelemetry\"\n| stats  max(MemoryReserved) as ContainerMemoryReserved, max(MemoryUtilized) as PeakMemoryUtilized, avg(MemoryUtilized) as AvgMemoryUtilized by ContainerName | sort ContainerName asc",
+                "region": "us-west-2",
+                "stacked": false,
+                "title": "Memory usage by container",
+                "view": "table"
+            }
+        },
+        {
+            "height": 6,
+            "width": 9,
+            "y": 0,
+            "x": 15,
+            "type": "log",
+            "properties": {
+                "query": "SOURCE '/aws/ecs/containerinsights/CLUSTERNAME/performance' | fields @message\n| filter Type=\"Container\" and ContainerName=\"CONTAINERNAMEREPLACEME\" and TaskId=\"TASKIDREPLACEME\"\n| filter @logStream like /FargateTelemetry/\n| stats  avg(CpuUtilized) as AvgCpuUtilized, max(CpuReserved) as ContainerCpuReserved by bin(30m)\n",
+                "region": "us-west-2",
+                "stacked": false,
+                "title": "CPU usage for selected container",
+                "view": "timeSeries"
+            }
+        },
+        {
+            "height": 6,
+            "width": 9,
+            "y": 6,
+            "x": 15,
+            "type": "log",
+            "properties": {
+                "query": "SOURCE '/aws/ecs/containerinsights/CLUSTERNAME/performance' | fields @message\n| filter Type=\"Container\" and ContainerName=\"CONTAINERNAMEREPLACEME\" and TaskId=\"TASKIDREPLACEME\"\n| filter @logStream like /FargateTelemetry/\n| stats ceil(avg(MemoryUtilized)) as AvgMemUtilized, max(MemoryReserved) as ContainerMemoryReserved by bin(30m)\n",
+                "region": "us-west-2",
+                "stacked": false,
+                "title": "Memory usage for selected container",
+                "view": "timeSeries"
+            }
+        },
+        {
+            "height": 9,
+            "width": 24,
+            "y": 12,
+            "x": 0,
+            "type": "log",
+            "properties": {
+                "query": "SOURCE '/aws/ecs/containerinsights/CLUSTERNAME/performance' | fields @message\n| filter Type=\"Task\" and TaskId=\"TASKIDREPLACEME\"\n| filter @logStream like \"FargateTelemetry\"\n| stats latest(TaskDefinitionFamily) as TaskDefFamily, latest(TaskDefinitionRevision) as Rev, latest(ServiceName) as Service, latest(ClusterName) as Cluster, max(CpuReserved) as TaskCpuReserved, avg(CpuUtilized) as AvgCpuUtilized, concat(ceil(avg(CpuUtilized) * 100 / TaskCpuReserved),\" %\") as AvgCpuUtilizedPerc, max(CpuUtilized) as PeakCpuUtilized, concat(ceil(max(CpuUtilized) * 100 / TaskCpuReserved),\" %\") as PeakCpuUtilizedPerc, max(MemoryReserved) as TaskMemReserved, ceil(avg(MemoryUtilized)) as AvgMemUtilized, concat(ceil(avg(MemoryUtilized) * 100 / TaskMemReserved),\" %\") as AvgMemUtilizedPerc, max(MemoryUtilized) as PeakMemUtilized, concat(ceil(max(MemoryUtilized) * 100 / TaskMemReserved),\" %\") as PeakMemUtilizedPerc",
+                "region": "us-west-2",
+                "stacked": false,
+                "title": "Fargate task details",
+                "view": "table"
+            }
+        }
+    ]
+}
